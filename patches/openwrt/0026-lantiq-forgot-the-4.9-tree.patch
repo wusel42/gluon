@@ -1,0 +1,40 @@
+From 5d612741994f22c055f6d1caf4847b7e1b6ec5dd Mon Sep 17 00:00:00 2001
+From: wusel42 <wusel+src@uu.org>
+Date: Tue, 22 Oct 2019 10:33:39 +0200
+Subject: [PATCH] lantiq: forgot the 4.9 tree
+
+Add consistent naming of AVM devices to the 4.9 tree as well
+---
+ target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts   | 2 +-
+ target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts
+index 34d0df9..8385efc 100644
+--- a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts
++++ b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts
+@@ -6,7 +6,7 @@
+ 
+ / {
+ 	compatible = "avm,fritz7320", "lantiq,xway", "lantiq,ar9";
+-	model = "1&1 HomeServer";
++	model = "AVM FRITZ!Box 7320";
+ 
+ 	chosen {
+ 		bootargs = "console=ttyLTQ0,115200";
+diff --git a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts
+index b164871..d17cea2 100644
+--- a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts
++++ b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts
+@@ -6,7 +6,7 @@
+ 
+ / {
+ 	compatible = "avm,fritz7360sl", "lantiq,xway", "lantiq,vr9";
+-	model = "1&1 HomeServer";
++	model = "AVM FRITZ!Box 7360 SL";
+ 
+ 	chosen {
+ 		bootargs = "console=ttyLTQ0,115200";
+-- 
+2.7.4
+

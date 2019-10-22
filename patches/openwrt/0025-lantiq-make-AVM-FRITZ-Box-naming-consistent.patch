@@ -1,0 +1,73 @@
+From 4cbf24f69f334abbd64f87dc1a69b635de7d3d84 Mon Sep 17 00:00:00 2001
+From: wusel42 <wusel+src@uu.org>
+Date: Tue, 22 Oct 2019 03:37:38 +0200
+Subject: [PATCH] lantiq: make AVM FRITZ!Box naming consistent
+
+This commit changes the model string and device title of all AVM boards
+to fit the naming of the manufacturer.
+
+Drop all provider-specific titles as they are re-used for every device
+generation by 1&1. The original AVM model name is printed on the bottom
+of every devices.
+
+Exception applies for boards which are only supported by a specific
+sub-revision.
+
+(From Upstream 19.06, d4ba7bab25c84478ce3aa5ebd80d24b5a5624e7b)
+---
+ target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts   | 2 +-
+ target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts | 2 +-
+ target/linux/lantiq/image/Makefile                                | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts
+index eed4ae3..bd01b10 100644
+--- a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts
++++ b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts
+@@ -6,7 +6,7 @@
+ 
+ / {
+ 	compatible = "avm,fritz7320", "lantiq,xway", "lantiq,ar9";
+-	model = "1&1 HomeServer";
++	model = "AVM FRITZ!Box 7320";
+ 
+ 	chosen {
+ 		bootargs = "console=ttyLTQ0,115200";
+diff --git a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts
+index a0f5d8e..65881c3 100644
+--- a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts
++++ b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts
+@@ -7,7 +7,7 @@
+ 
+ / {
+ 	compatible = "avm,fritz7360sl", "lantiq,xway", "lantiq,vr9";
+-	model = "1&1 HomeServer";
++	model = "AVM FRITZ!Box 7360 SL";
+ 
+ 	chosen {
+ 		bootargs = "console=ttyLTQ0,115200";
+diff --git a/target/linux/lantiq/image/Makefile b/target/linux/lantiq/image/Makefile
+index 031c3fc..35af009 100644
+--- a/target/linux/lantiq/image/Makefile
++++ b/target/linux/lantiq/image/Makefile
+@@ -489,7 +489,7 @@ define Device/avm_fritz7320
+   $(Device/AVM)
+   DEVICE_DTS := FRITZ7320
+   IMAGE_SIZE := 15744k
+-  DEVICE_TITLE := 1&1 HomeServer - FRITZ7320
++  DEVICE_TITLE := AVM FRITZ!Box 7320
+   DEVICE_PACKAGES := kmod-ath9k kmod-owl-loader wpad-mini \
+ 	kmod-ltq-adsl-ar9-mei kmod-ltq-adsl-ar9 \
+ 	kmod-ltq-adsl-ar9-fw-b kmod-ltq-atm-ar9 \
+@@ -629,7 +629,7 @@ define Device/avm_fritz7360sl
+   $(Device/AVM)
+   IMAGE_SIZE := 15744k
+   DEVICE_DTS := FRITZ7360SL
+-  DEVICE_TITLE := 1&1 HomeServer - FRITZ7360SL
++  DEVICE_TITLE := AVM FRITZ!Box 7360 SL
+   DEVICE_PACKAGES := kmod-ath9k kmod-owl-loader wpad-mini kmod-usb-dwc2
+   SUPPORTED_DEVICES += FRITZ7360SL
+ endef
+-- 
+2.7.4
+
