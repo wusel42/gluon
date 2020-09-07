@@ -6,6 +6,8 @@ RUN apt update && apt install -y --no-install-recommends \
     git \
     subversion \
     python \
+    python3 \
+    python3-pytest \
     build-essential \
     gawk \
     unzip \
@@ -18,7 +20,9 @@ RUN apt update && apt install -y --no-install-recommends \
     ecdsautils \
     lua-check \
     shellcheck \
+    qemu-system-x86 \
   && rm -rf /var/lib/apt/lists/*
+RUN python3 -m pip install gluon-qemu-testlab
 
 RUN useradd -d /gluon gluon
 USER gluon

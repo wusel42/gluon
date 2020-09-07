@@ -2,6 +2,7 @@
 /openwrt
 /output
 /site
+/tests/__pycache__
 /tmp
 /packages
 .bash_history
