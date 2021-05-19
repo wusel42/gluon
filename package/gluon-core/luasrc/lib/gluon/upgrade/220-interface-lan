@@ -11,28 +11,30 @@ if not sysconfig.lan_ifname then
 end
 
 uci:section('network', 'interface', 'mesh_lan', {
-	ifname        = sysconfig.lan_ifname,
+	ifname        = 'br-mesh_lan',
 	igmp_snooping = false,
 	proto         = 'gluon_wired',
 	index         = 4,
 	vxlan         = site.mesh.vxlan(true),
 })
 
-if sysconfig.lan_ifname:match(' ') then
-	uci:set('network', 'mesh_lan', 'type', 'bridge')
-else
-	uci:delete('network', 'mesh_lan', 'type')
-end
+uci:delete('network', 'mesh_lan', 'type')
+
+uci:section('network', 'device', 'br_mesh_lan', {
+	name          = 'br-mesh_lan',
+	type          = 'bridge',
+})
 
 local enable = site.mesh_on_lan(false)
 local old_auto = uci:get('network', 'mesh_lan', 'auto')
 local old_disabled = uci:get('network', 'mesh_lan', 'disabled')
-if old_auto ~= nil or old_disabled ~= nil then
-	enable = old_auto ~= '0' and old_disabled ~= '1'
+local new_disabled = uci:get('network', 'br_mesh_lan', 'disabled')
+if old_auto ~= nil or old_disabled ~= nil or new_disabled ~= nil then
+	enable = old_auto ~= '0' and old_disabled ~= '1' and new_disabled ~= '1'
 end
 
 if enable then
-	local interfaces = uci:get_list('network', 'client', 'ifname')
+	local interfaces = uci:get_list('network', 'br_client', 'ports')
 
 	if interfaces then
 		for lanif in sysconfig.lan_ifname:gmatch('%S+') do
@@ -44,12 +46,20 @@ if enable then
 	end
 end
 
-uci:set('network', 'mesh_lan', 'disabled', not enable)
+uci:set('network', 'br_mesh_lan', 'disabled', not enable)
+if enable then
+	local interfaces = {}
+	for lanif in sysconfig.lan_ifname:gmatch('%S+') do
+		util.add_to_set(interfaces, lanif)
+	end
+	uci:set('network', 'br_mesh_lan', 'ports', interfaces)
+end
 
 if uci:get('network', 'mesh_lan', 'transitive') == nil then
 	uci:set('network', 'mesh_lan', 'transitive', true)
 end
 
+uci:delete('network', 'mesh_lan', 'disabled')
 uci:delete('network', 'mesh_lan', 'auto')
 uci:delete('network', 'mesh_lan', 'fixed_mtu')
 uci:delete('network', 'mesh_lan', 'legacy')

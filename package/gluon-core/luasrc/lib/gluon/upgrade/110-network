@@ -1,12 +1,22 @@
 #!/usr/bin/lua
 
 local uci = require('simple-uci').cursor()
+local util = require 'gluon.util'
 local sysconfig = require 'gluon.sysconfig'
 
+local interfaces = {}
+for wanif in sysconfig.wan_ifname:gmatch('%S+') do
+	util.add_to_set(interfaces, wanif)
+end
+
+uci:section('network', 'device', 'br_wan', {
+	ifname = 'br-wan',
+	type = 'bridge',
+	ports = interfaces,
+})
 
 uci:section('network', 'interface', 'wan', {
-	ifname = sysconfig.wan_ifname,
-	type = 'bridge',
+	ifname = 'br-wan',
 	igmp_snooping = true,
 	multicast_querier = false,
 	peerdns = false,
