@@ -24,11 +24,15 @@ end
 
 util.add_to_set(interfaces, 'local-port')
 
+uci:section('network', 'device', 'br_client', {
+	ifname = 'br-client',
+	type = 'bridge',
+	ports = interfaces,
+})
 
 uci:delete('network', 'client')
 uci:section('network', 'interface', 'client', {
-	type = 'bridge',
-	ifname = interfaces,
+	ifname = 'br-client',
 	proto = 'none',
 	auto = true,
 	ipv6 = false,
