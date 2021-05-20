@@ -87,12 +87,12 @@ if sysconfig.lan_ifname then
 	s = f:section(Section)
 
 	local mesh_lan = s:option(Flag, "mesh_lan", translate("Enable meshing on the LAN interface"))
-	mesh_lan.default = not uci:get_bool("network", "mesh_lan", "disabled")
+	mesh_lan.default = not uci:get_bool("network", "br_mesh_lan", "disabled")
 
 	function mesh_lan:write(data)
-		uci:set("network", "mesh_lan", "disabled", not data)
+		uci:set("network", "br_mesh_lan", "disabled", not data)
 
-		local interfaces = uci:get_list("network", "client", "ifname")
+		local interfaces = uci:get_list("network", "br_client", "ports")
 
 		for lanif in sysconfig.lan_ifname:gmatch('%S+') do
 			if data then
@@ -102,7 +102,7 @@ if sysconfig.lan_ifname then
 			end
 		end
 
-		uci:set_list("network", "client", "ifname", interfaces)
+		uci:set_list("network", "br_client", "ports", interfaces)
 	end
 end
 
