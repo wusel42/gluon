@@ -127,9 +127,13 @@ static struct json_object * respondd_provider_nodeinfo(void) {
 	json_object_object_add(ret, "software", software);
 
 	struct json_object *system = json_object_new_object();
-	json_object_object_add(system, "site_code", get_site_code());
-	if (gluonutil_has_domains())
+	if (gluonutil_has_domains()) {
 		json_object_object_add(system, "domain_code", get_domain_code());
+		json_object_object_add(system, "gluon_site_code", get_site_code());
+		json_object_object_add(system, "site_code", get_domain_code());
+	} else {
+		json_object_object_add(system, "site_code", get_site_code());
+	}
 	json_object_object_add(ret, "system", system);
 
 	return ret;

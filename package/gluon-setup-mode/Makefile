@@ -9,12 +9,12 @@ PKG_VERSION:=1
 include ../gluon.mk
 
 define Package/gluon-setup-mode
-  TITLE:=Setup mode
+  TITLE:=Our setup mode has dhcp client on setup_ifname (WAN), and 203.0.113.1/24 on lan_ifname (LAN)
   DEPENDS:=+gluon-core +gluon-lock-password +ubus +dnsmasq
 endef
 
 define Package/gluon-setup-mode/description
-	Offline mode to perform basic setup in a secure manner.
+	Mode to perform basic setup in a connected way (i. e. with Internet access)
 endef
 
 $(eval $(call BuildPackageGluon,gluon-setup-mode))

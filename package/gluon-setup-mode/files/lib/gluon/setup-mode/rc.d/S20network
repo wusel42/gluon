@@ -1,6 +1,6 @@
 #!/bin/sh /etc/rc.common
 
-SETUP_MODE_ADDR=192.168.1.1
+SETUP_MODE_ADDR=203.0.113.1
 SETUP_MODE_NETMASK=255.255.255.0
 
 START=20
@@ -24,13 +24,19 @@ prepare_config() {
 	config_load network
 	config_foreach delete_interface interface
 
+    # Our setup has dhcp client on setup_ifname, and 203.0.113.1/24 on lan_ifname (which may be the same;
+    # needs to be tested if this works properly).
 	uci_add network interface setup
 	uci_set network setup ifname "$(lua -e 'print(require("gluon.sysconfig").setup_ifname)')"
 	uci_set network setup macaddr "$(lua -e 'print(require("gluon.sysconfig").primary_mac)')"
 	uci_set network setup type 'bridge'
-	uci_set network setup proto 'static'
-	uci_set network setup ipaddr "$SETUP_MODE_ADDR"
-	uci_set network setup netmask "$SETUP_MODE_NETMASK"
+	uci_set network setup proto 'dhcp'
+
+	uci_add network interface fallback
+	uci_set network fallback ifname "$(lua -e 'print(require("gluon.sysconfig").lan_ifname)')"
+	uci_set network fallback proto 'static'
+	uci_set network fallback ipaddr "$SETUP_MODE_ADDR"
+	uci_set network fallback netmask "$SETUP_MODE_NETMASK"
 
 	uci_commit network
 )

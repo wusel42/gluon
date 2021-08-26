@@ -101,7 +101,7 @@
 				<dl>
 					<dt><%:Node name%></dt><dd><%| nodeinfo.hostname %></dd>
 					<% if nodeinfo.owner and nodeinfo.owner.contact then -%>
-						<dt><%:Contact%></dt><dd><%| nodeinfo.owner.contact %></dd>
+					    <dt><%:Contact%></dt><dd> <a href="mailto:<%| nodeinfo.node_id %>@<%| nodeinfo.system.site_code %>.nospam.4830.org">email</a> <!-- <%| nodeinfo.owner.contact:gsub('%-%-', '&mdash;'):gsub('@', '%%') %> --></dd>
 					<%- end %>
 					<% if nodeinfo.location then -%>
 						<dt><%:Location%></dt>
@@ -113,6 +113,7 @@
 					<dt><%:Primary MAC address%></dt><dd><%| nodeinfo.network.mac %></dd>
 					<dt><%:IP address%></dt><dd><%= pcdata(table.concat(sorted(nodeinfo.network.addresses), '\n')):gsub('\n', '<br />') %></dd>
 					<dt><%:Firmware%></dt><dd><%| nodeinfo.software.firmware.release %></dd>
+					<dt><%:Sitecode%></dt><dd><%| nodeinfo.system.site_code %></dd>
 					<% if nodeinfo.software.fastd then -%>
 						<dt><%:Mesh VPN%></dt><dd><%| enabled(nodeinfo.software.fastd.enabled) %></dd>
 					<%- end %>

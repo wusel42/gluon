@@ -72,12 +72,28 @@ local function get_htmode(radio)
 		end
 	end
 
-	local phy = util.find_phy(radio)
-	if iwinfo.nl80211.hwmodelist(phy).ac then
-		return 'VHT20'
+    local config_htmode = uci:get('gluon', 'wireless', radio['.name'] .. '_htmode')
+	if config_htmode ~= nil then
+	    return config_htmode
+	else
+		if radio.hwmode == '11a' or radio.hwmode == '11na' then
+			uci:set('gluon', 'wireless', radio['.name'] .. '_htmode', "VHT20")
+			config_htmode="VHT20"
+		else
+			uci:set('gluon', 'wireless', radio['.name'] .. '_htmode', "HT20")
+			config_htmode="HT20"
+		end
+		uci:save('gluon')
+		uci:commit('gluon')
 	end
 
-	return 'HT20'
+--	local phy = util.find_phy(radio)
+--	if iwinfo.nl80211.hwmodelist(phy).ac then
+--		return 'VHT20'
+--	end
+--
+--	return 'HT20'
+    return config_htmode
 end
 
 local function is_disabled(name)
