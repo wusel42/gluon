@@ -1,0 +1,29 @@
+
+$ git clone https://github.com/freifunk-gluon/gluon.git gluon-upstream
+cd gluon-upstream/
+git checkout -b v2018.1.x
+# add commits, from oldest to newest, to /tmp/7777
+# e. g.:
+# git log --format=oneline  # compare to ../gluon-ffgt-v2018.1
+# cut & paste the id to /tmp/7777
+# tac /tmp/7777 >/tmp/7777_ ; mv /tmp/7777_ /tmp/7777
+#
+# wusel@ysabell:/data/wusel/gluon-ffgt-v2018.1$ ls upstream-patches/applied/ | cut -d - -f 1 | tail -1 | sed 's/^0*//' | awk '{x=$1; printf("%04d\n", x+1);}'  
+# 0012
+# => n=12 below 
+n=(see above, e. g. 12); for i in $(cat /tmp/7777) ; do git format-patch --output-directory ../gluon-ffgt-v2018.2/upstream-patches --start-number $n -1 $i ; n=$(expr $n + 1); done
+cd ../gluon-ffgt-v2018.2/
+# commit & push
+cd upstream-patches/
+for i in 0*.patch ; do git am < $i && mv $i applied/ ; done
+
+###### Merge leftovers/sync with upstream
+
+wusel@ysabell:/data/wusel/gluon-upstream$ for i in $(find . -type f | grep -v \.git) ; do target=../gluon-ffgt-v2018.2/$i ; if [ ! -e ${target} ]; then target=/dev/null ; fi ; cmp ${target} $i >/dev/null 2>&1 || echo $i  ; done >/tmp/filelist
+wusel@ysabell:/data/wusel/gluon-upstream$ cd ../gluon-ffgt-v2018.2/
+wusel@ysabell:/data/wusel/gluon-ffgt-v2018.2$ for i in $(cat /tmp/filelist) ; do new=../gluon-upstream/$i ; old=${i}; if [ ! -e ${old} ]; then touch $i ; fi ; diff -u ${old} ${new} 2>/dev/null ; done >/tmp/diff.txt
+# Fix any "cannot touch ..." issue, run again
+# Verify /tmp/diff.txt to NOT UNDO FFGT specific changes, note especially changes to these files:
+# ./targets/targets.mk ./package/gluon-web-admin/i18n/de.po ./package/gluon-status-page/files/lib/gluon/status-page/view/status-page.html ./package/gluon-setup-mode/files/lib/gluon/setup-mode/rc.d/S20network ./package/gluon-setup-mode/luasrc/lib/gluon/upgrade/320-setup-ifname ./package/gluon-setup-mode/Makefile
+
+

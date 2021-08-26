@@ -1,0 +1,179 @@
+From 5dfd5d2625577b6d267b7ed4c7239f451558df73 Mon Sep 17 00:00:00 2001
+From: wusel42 <wusel+src@uu.org>
+Date: Wed, 23 Oct 2019 00:21:04 +0200
+Subject: [PATCH] Enable Fritzbox 7360SL, 7320 on Gluon v2018.2.x - ENTER AT
+ OWN RISK!
+
+This patch enables Gluon v2018.2.3 experimentally on Fritzbox 7320 and 7360 v1 (v1, SL, EWE-Editon) devices. This was made possible due to the work of many others (@blockttron, @misanthropos, see https://forum.freifunk.net/t/gluon-auf-avm-fritzbox-fb7312-fb7313/21260 (German) for background and details), I simply backe this patch.
+
+To actually build the images, you need to "make GLUON_TARGET=lantiq-xrx200" (7360 v1) and "make GLUON_TARGET=lantiq-xway" (7330) ...
+---
+ ...ntiq-make-AVM-FRITZ-Box-naming-consistent.patch | 73 ++++++++++++++++++++++
+ .../openwrt/0026-lantiq-forgot-the-4.9-tree.patch  | 40 ++++++++++++
+ targets/lantiq-xrx200                              |  3 +
+ targets/lantiq-xway                                |  2 +
+ targets/targets.mk                                 |  2 +
+ 5 files changed, 120 insertions(+)
+ create mode 100644 patches/openwrt/0025-lantiq-make-AVM-FRITZ-Box-naming-consistent.patch
+ create mode 100644 patches/openwrt/0026-lantiq-forgot-the-4.9-tree.patch
+ create mode 100644 targets/lantiq-xrx200
+ create mode 100644 targets/lantiq-xway
+
+diff --git a/patches/openwrt/0025-lantiq-make-AVM-FRITZ-Box-naming-consistent.patch b/patches/openwrt/0025-lantiq-make-AVM-FRITZ-Box-naming-consistent.patch
+new file mode 100644
+index 0000000..934f22d
+--- /dev/null
++++ b/patches/openwrt/0025-lantiq-make-AVM-FRITZ-Box-naming-consistent.patch
+@@ -0,0 +1,73 @@
++From 4cbf24f69f334abbd64f87dc1a69b635de7d3d84 Mon Sep 17 00:00:00 2001
++From: wusel42 <wusel+src@uu.org>
++Date: Tue, 22 Oct 2019 03:37:38 +0200
++Subject: [PATCH] lantiq: make AVM FRITZ!Box naming consistent
++
++This commit changes the model string and device title of all AVM boards
++to fit the naming of the manufacturer.
++
++Drop all provider-specific titles as they are re-used for every device
++generation by 1&1. The original AVM model name is printed on the bottom
++of every devices.
++
++Exception applies for boards which are only supported by a specific
++sub-revision.
++
++(From Upstream 19.06, d4ba7bab25c84478ce3aa5ebd80d24b5a5624e7b)
++---
++ target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts   | 2 +-
++ target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts | 2 +-
++ target/linux/lantiq/image/Makefile                                | 4 ++--
++ 3 files changed, 4 insertions(+), 4 deletions(-)
++
++diff --git a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts
++index eed4ae3..bd01b10 100644
++--- a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts
+++++ b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7320.dts
++@@ -6,7 +6,7 @@
++ 
++ / {
++ 	compatible = "avm,fritz7320", "lantiq,xway", "lantiq,ar9";
++-	model = "1&1 HomeServer";
+++	model = "AVM FRITZ!Box 7320";
++ 
++ 	chosen {
++ 		bootargs = "console=ttyLTQ0,115200";
++diff --git a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts
++index a0f5d8e..65881c3 100644
++--- a/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts
+++++ b/target/linux/lantiq/files-4.14/arch/mips/boot/dts/FRITZ7360SL.dts
++@@ -7,7 +7,7 @@
++ 
++ / {
++ 	compatible = "avm,fritz7360sl", "lantiq,xway", "lantiq,vr9";
++-	model = "1&1 HomeServer";
+++	model = "AVM FRITZ!Box 7360 SL";
++ 
++ 	chosen {
++ 		bootargs = "console=ttyLTQ0,115200";
++diff --git a/target/linux/lantiq/image/Makefile b/target/linux/lantiq/image/Makefile
++index 031c3fc..35af009 100644
++--- a/target/linux/lantiq/image/Makefile
+++++ b/target/linux/lantiq/image/Makefile
++@@ -489,7 +489,7 @@ define Device/avm_fritz7320
++   $(Device/AVM)
++   DEVICE_DTS := FRITZ7320
++   IMAGE_SIZE := 15744k
++-  DEVICE_TITLE := 1&1 HomeServer - FRITZ7320
+++  DEVICE_TITLE := AVM FRITZ!Box 7320
++   DEVICE_PACKAGES := kmod-ath9k kmod-owl-loader wpad-mini \
++ 	kmod-ltq-adsl-ar9-mei kmod-ltq-adsl-ar9 \
++ 	kmod-ltq-adsl-ar9-fw-b kmod-ltq-atm-ar9 \
++@@ -629,7 +629,7 @@ define Device/avm_fritz7360sl
++   $(Device/AVM)
++   IMAGE_SIZE := 15744k
++   DEVICE_DTS := FRITZ7360SL
++-  DEVICE_TITLE := 1&1 HomeServer - FRITZ7360SL
+++  DEVICE_TITLE := AVM FRITZ!Box 7360 SL
++   DEVICE_PACKAGES := kmod-ath9k kmod-owl-loader wpad-mini kmod-usb-dwc2
++   SUPPORTED_DEVICES += FRITZ7360SL
++ endef
++-- 
++2.7.4
++
+diff --git a/patches/openwrt/0026-lantiq-forgot-the-4.9-tree.patch b/patches/openwrt/0026-lantiq-forgot-the-4.9-tree.patch
+new file mode 100644
+index 0000000..f3bb4ad
+--- /dev/null
++++ b/patches/openwrt/0026-lantiq-forgot-the-4.9-tree.patch
+@@ -0,0 +1,40 @@
++From 5d612741994f22c055f6d1caf4847b7e1b6ec5dd Mon Sep 17 00:00:00 2001
++From: wusel42 <wusel+src@uu.org>
++Date: Tue, 22 Oct 2019 10:33:39 +0200
++Subject: [PATCH] lantiq: forgot the 4.9 tree
++
++Add consistent naming of AVM devices to the 4.9 tree as well
++---
++ target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts   | 2 +-
++ target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts | 2 +-
++ 2 files changed, 2 insertions(+), 2 deletions(-)
++
++diff --git a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts
++index 34d0df9..8385efc 100644
++--- a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts
+++++ b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7320.dts
++@@ -6,7 +6,7 @@
++ 
++ / {
++ 	compatible = "avm,fritz7320", "lantiq,xway", "lantiq,ar9";
++-	model = "1&1 HomeServer";
+++	model = "AVM FRITZ!Box 7320";
++ 
++ 	chosen {
++ 		bootargs = "console=ttyLTQ0,115200";
++diff --git a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts
++index b164871..d17cea2 100644
++--- a/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts
+++++ b/target/linux/lantiq/files-4.9/arch/mips/boot/dts/FRITZ7360SL.dts
++@@ -6,7 +6,7 @@
++ 
++ / {
++ 	compatible = "avm,fritz7360sl", "lantiq,xway", "lantiq,vr9";
++-	model = "1&1 HomeServer";
+++	model = "AVM FRITZ!Box 7360 SL";
++ 
++ 	chosen {
++ 		bootargs = "console=ttyLTQ0,115200";
++-- 
++2.7.4
++
+diff --git a/targets/lantiq-xrx200 b/targets/lantiq-xrx200
+new file mode 100644
+index 0000000..e2d80e7
+--- /dev/null
++++ b/targets/lantiq-xrx200
+@@ -0,0 +1,3 @@
++device avm-fritz-box-7360-sl avm_fritz7360sl
++factory
++
+diff --git a/targets/lantiq-xway b/targets/lantiq-xway
+new file mode 100644
+index 0000000..9fa0eeb
+--- /dev/null
++++ b/targets/lantiq-xway
+@@ -0,0 +1,2 @@
++device avm-fritz-box-7320 avm_fritz7320
++factory 
+diff --git a/targets/targets.mk b/targets/targets.mk
+index 213cf8e..6f230f4 100644
+--- a/targets/targets.mk
++++ b/targets/targets.mk
+@@ -5,6 +5,8 @@ $(eval $(call GluonTarget,ar71xx,tiny))
+ $(eval $(call GluonTarget,ar71xx,nand))
+ $(eval $(call GluonTarget,brcm2708,bcm2708))
+ $(eval $(call GluonTarget,brcm2708,bcm2709))
++$(eval $(call GluonTarget,lantiq,xrx200))
++$(eval $(call GluonTarget,lantiq,xway))
+ $(eval $(call GluonTarget,mpc85xx,generic))
+ $(eval $(call GluonTarget,mpc85xx,p1020))
+ $(eval $(call GluonTarget,ramips,mt7621))
+-- 
+2.7.4
+
